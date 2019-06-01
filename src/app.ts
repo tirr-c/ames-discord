@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import { Config } from './config';
 import GraphQlClient from './graphql';
 
+type SendableChannel = Discord.TextChannel | Discord.DMChannel | Discord.GroupDMChannel;
+
 export default class App {
     private client: Discord.Client;
     private graphql: GraphQlClient;
@@ -14,6 +16,16 @@ export default class App {
         client.on('error', err => {
             console.error(err);
         });
+        client.on('message', async message => {
+            const content = message.content;
+            if (content.startsWith('프리코네 캐릭터 ')) {
+                const name = content.substring(9).trim();
+                if (name !== '') {
+                    await this.sendCharacterInfoByName(message.channel, name);
+                    return;
+                }
+            }
+        });
 
         this.client = client;
         this.graphql = new GraphQlClient(config);
@@ -23,7 +35,7 @@ export default class App {
         await this.client.login(this.config.token);
     }
 
-    async sendCharacterInfoByName(channel: Discord.TextChannel, name: string) {
+    async sendCharacterInfoByName(channel: SendableChannel, name: string) {
         const { data: characterInfo } = await this.graphql.getCharacterInfo(name);
         const { characterUnit } = characterInfo;
         if (characterUnit == null) {
