@@ -7,7 +7,7 @@ export interface CharacterInfoResponse {
         name: string;
         rarity: number;
         comment: string;
-    };
+    } | null;
 }
 
 export const CharacterInfo: Query<CharacterInfoResponse, { name: string }> = {

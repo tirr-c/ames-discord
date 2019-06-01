@@ -25,11 +25,22 @@ export default class App {
 
     async sendCharacterInfoByName(channel: Discord.TextChannel, name: string) {
         const { data: characterInfo } = await this.graphql.getCharacterInfo(name);
+        const { characterUnit } = characterInfo;
+        if (characterUnit == null) {
+            await channel.send(`:x: ${name}`);
+            return;
+        }
 
         const embed = new Discord.RichEmbed();
-        embed.setTitle(characterInfo.characterUnit.name);
-        embed.setDescription(characterInfo.characterUnit.comment);
-        embed.addField('레어도', `★${characterInfo.characterUnit.rarity}`, true);
+        embed.setTitle(characterUnit.name);
+        embed.setDescription(characterUnit.comment.replace(/\\n/g, ' '));
+        embed.setThumbnail(
+            new URL(
+                `icons/unit/${characterUnit.id + 10}.png`,
+                this.config.staticAssetsUrl,
+            ).toString(),
+        );
+        embed.addField('레어도', `★${characterUnit.rarity}`, true);
         await channel.send(embed);
     }
 }
