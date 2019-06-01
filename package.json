@@ -1,0 +1,23 @@
+{
+  "name": "ames-discord",
+  "version": "0.1.0",
+  "description": "PCR Discord bot",
+  "repository": "https://github.com/tirr-c/ames-discord.git",
+  "author": "Wonwoo Choi <chwo9843@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "typescript": "^3.5.1"
+  }
+}
