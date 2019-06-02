@@ -1,8 +1,11 @@
 FROM node:10 AS build
 
 WORKDIR /app
+COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
+RUN yarn --frozen-lockfile && yarn cache clean
 COPY . /app
-RUN yarn --frozen-lockfile && yarn build
+RUN yarn build
 
 FROM node:10
 
