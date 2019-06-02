@@ -1,4 +1,6 @@
+import * as Sentry from '@sentry/node';
 import * as Discord from 'discord.js';
+
 import { Config } from './config';
 import GraphQlClient from './graphql';
 
@@ -15,16 +17,14 @@ export default class App {
         });
         client.on('error', err => {
             console.error(err);
+            Sentry.captureException(err);
         });
-        client.on('message', async message => {
-            const content = message.content;
-            if (content.startsWith('프리코네 캐릭터 ')) {
-                const name = content.substring(9).trim();
-                if (name !== '') {
-                    await this.sendCharacterInfoByName(message.channel, name);
-                    return;
-                }
-            }
+        client.on('message', message => {
+            this.processMessage(message)
+                .catch(err => {
+                    console.error(err);
+                    Sentry.captureException(err);
+                });
         });
 
         this.client = client;
@@ -33,6 +33,17 @@ export default class App {
 
     async run() {
         await this.client.login(this.config.token);
+    }
+
+    private async processMessage(message: Discord.Message) {
+        const content = message.content;
+        if (content.startsWith('프리코네 캐릭터 ')) {
+            const name = content.substring(9).trim();
+            if (name !== '') {
+                await this.sendCharacterInfoByName(message.channel, name);
+                return;
+            }
+        }
     }
 
     async sendCharacterInfoByName(channel: SendableChannel, name: string) {
