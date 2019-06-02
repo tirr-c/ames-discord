@@ -27,4 +27,8 @@ export default class GraphQlClient {
     getCharacterInfo(name: string) {
         return this.query(queries.CharacterInfo, { name });
     }
+
+    getCharacterStat(name: string, rarity: number, rank: number) {
+        return this.query(queries.CharacterStat, { name, rarity, rank });
+    }
 }

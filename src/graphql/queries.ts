@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost';
+import { Stat } from '../types/stat';
 import { Query } from './types';
 
 export interface CharacterInfoResponse {
@@ -35,6 +36,84 @@ export const CharacterInfo: Query<CharacterInfoResponse, { name: string }> = {
                 unit {
                     rarity
                     comment
+                }
+            }
+        }
+    `,
+};
+
+export interface CharacterStatResponse {
+    characterProfile: {
+        id: number;
+        unit: {
+            stat: {
+                base: Stat;
+                growthRate: Stat;
+            } | null;
+            statByRank: Stat | null;
+        };
+    } | null;
+}
+
+export const CharacterStat: Query<CharacterStatResponse, { name: string; rarity: number; rank: number }> = {
+    query: gql`
+        query GetCharacterStat($name: String!, $rarity: Int!, $rank: Int!) {
+            characterProfile(name: $name) {
+                id
+                unit {
+                    stat(rarity: $rarity) {
+                        base {
+                            hp
+                            atk
+                            magicStr
+                            def
+                            magicDef
+                            physicalCritical
+                            magicCritical
+                            waveHpRecovery
+                            waveEnergyRecovery
+                            dodge
+                            lifeSteal
+                            hpRecoveryRate
+                            energyRecoveryRate
+                            energyReduceRate
+                            accuracy
+                        }
+                        growthRate {
+                            hp
+                            atk
+                            magicStr
+                            def
+                            magicDef
+                            physicalCritical
+                            magicCritical
+                            waveHpRecovery
+                            waveEnergyRecovery
+                            dodge
+                            lifeSteal
+                            hpRecoveryRate
+                            energyRecoveryRate
+                            energyReduceRate
+                            accuracy
+                        }
+                    }
+                    statByRank(rank: $rank) {
+                        hp
+                        atk
+                        magicStr
+                        def
+                        magicDef
+                        physicalCritical
+                        magicCritical
+                        waveHpRecovery
+                        waveEnergyRecovery
+                        dodge
+                        lifeSteal
+                        hpRecoveryRate
+                        energyRecoveryRate
+                        energyReduceRate
+                        accuracy
+                    }
                 }
             }
         }
