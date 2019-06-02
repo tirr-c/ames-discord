@@ -1,5 +1,9 @@
 # ames-discord
 
+[**서버에 봇 추가하기**][invite-bot]
+
+[invite-bot]: https://discordapp.com/oauth2/authorize?client_id=584333585410949140&scope=bot&permissions=51200
+
 * **디펜던시 설치**: `yarn`
 * **빌드**: `yarn build`
 * **실팽**: `yarn start`
