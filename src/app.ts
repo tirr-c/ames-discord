@@ -37,22 +37,29 @@ export default class App {
 
     async sendCharacterInfoByName(channel: SendableChannel, name: string) {
         const { data: characterInfo } = await this.graphql.getCharacterInfo(name);
-        const { characterUnit } = characterInfo;
-        if (characterUnit == null) {
+        const { characterProfile } = characterInfo;
+        if (characterProfile == null) {
             await channel.send(`:x: ${name}`);
             return;
         }
 
         const embed = new Discord.RichEmbed();
-        embed.setTitle(characterUnit.name);
-        embed.setDescription(characterUnit.comment.replace(/\\n/g, ' '));
+        embed.setTitle(characterProfile.name);
+        embed.setDescription(characterProfile.unit.comment.replace(/\\n/g, ' '));
         embed.setThumbnail(
             new URL(
-                `icons/unit/${characterUnit.id + 10}.png`,
+                `icons/unit/${characterProfile.id + 10}.png`,
                 this.config.staticAssetsUrl,
             ).toString(),
         );
-        embed.addField('레어도', `★${characterUnit.rarity}`, true);
+        embed.addField('레어도', `★${characterProfile.unit.rarity}`, true);
+        embed.addField('나이', characterProfile.age == null ? '알 수 없음' : `${characterProfile.age}세`);
+        embed.addField('종족', characterProfile.race);
+        embed.addField('키', characterProfile.height == null ? '알 수 없음' : `${characterProfile.height}cm`);
+        embed.addField('몸무게', characterProfile.weight == null ? '알 수 없음' : `${characterProfile.weight}kg`);
+        embed.addField('혈액형', characterProfile.bloodType === '?' ? '알 수 없음' : `${characterProfile.bloodType}형`);
+        embed.addField('취미', characterProfile.favorite);
+        embed.addField('성우', characterProfile.voice);
         await channel.send(embed);
     }
 }
