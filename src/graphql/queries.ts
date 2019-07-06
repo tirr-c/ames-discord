@@ -125,7 +125,7 @@ export interface NearestBirthdayFromResponse {
         id: number;
         name: string;
         birthMonth: number;
-        birtyDay: number;
+        birthDay: number;
     };
 }
 

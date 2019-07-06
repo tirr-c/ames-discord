@@ -35,7 +35,7 @@ export default class App {
         this.client = client;
         this.graphql = new GraphQlClient(config);
         this.dayCron = new CronJob({
-            cronTime: '0 40 2 * * *', // FIXME: 테스트
+            cronTime: '0 0 5 * * *',
             onTick: this.notifyDay,
             timeZone: 'Asia/Seoul',
             unrefTimeout: true,
@@ -48,7 +48,7 @@ export default class App {
     }
 
     private notifyDay = async () => {
-        const channel = await this.client.channels.get(this.config.tempChannelId);
+        const channel = this.client.channels.get(this.config.tempChannelId);
         if (channel == null || !['text', 'dm', 'group'].includes(channel.type)) {
             return;
         }
