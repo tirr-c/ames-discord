@@ -31,4 +31,22 @@ export default class GraphQlClient {
     getCharacterStat(name: string, rarity: number, rank: number) {
         return this.query(queries.CharacterStat, { name, rarity, rank });
     }
+
+    getNearestBirthdayFrom(month: number, day: number) {
+        return this.query(queries.NearestBirthdayFrom, { month, day });
+    }
+
+    async getTodayBirthday() {
+        const today = new Date();
+        const month = today.getMonth() + 1;
+        const day = today.getDate();
+        const nearest = await this.getNearestBirthdayFrom(month, day);
+        if (nearest.data.result.birthMonth === month && nearest.data.result.birtyDay === day) {
+            return {
+                id: nearest.data.result.id,
+                name: nearest.data.result.name,
+            };
+        }
+        return null;
+    }
 }

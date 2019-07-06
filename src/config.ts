@@ -7,6 +7,7 @@ export interface Config {
     graphqlEndpoint: string;
     staticAssetsUrl: string;
     sentryDsn?: string;
+    tempChannelId: string;
 }
 
 export async function loadFromFile(envPath: string): Promise<Config> {
@@ -17,5 +18,6 @@ export async function loadFromFile(envPath: string): Promise<Config> {
         graphqlEndpoint: env.AMES_ENDPOINT,
         staticAssetsUrl: env.AMES_STATIC,
         sentryDsn: env.SENTRY_DSN || undefined,
+        tempChannelId: env.TEMP_CHANNEL_ID,
     };
 }

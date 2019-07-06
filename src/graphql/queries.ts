@@ -119,3 +119,25 @@ export const CharacterStat: Query<CharacterStatResponse, { name: string; rarity:
         }
     `,
 };
+
+export interface NearestBirthdayFromResponse {
+    result: {
+        id: number;
+        name: string;
+        birthMonth: number;
+        birtyDay: number;
+    };
+}
+
+export const NearestBirthdayFrom: Query<NearestBirthdayFromResponse, { month: number, day: number }> = {
+    query: gql`
+        query NearestBirthdayFrom($month: Int!, $day: Int!) {
+            result: nearestBirthdayFrom(month: $month, day: $day) {
+                id
+                name
+                birthMonth
+                birthDay
+            }
+        }
+    `,
+};

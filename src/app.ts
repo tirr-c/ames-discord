@@ -1,6 +1,7 @@
 import { URL } from 'url';
 
 import * as Sentry from '@sentry/node';
+import { CronJob } from 'cron';
 import * as Discord from 'discord.js';
 
 import { Config } from './config';
@@ -12,6 +13,7 @@ type SendableChannel = Discord.TextChannel | Discord.DMChannel | Discord.GroupDM
 export default class App {
     private client: Discord.Client;
     private graphql: GraphQlClient;
+    private dayCron: CronJob;
 
     constructor(private config: Config) {
         const client = new Discord.Client();
@@ -32,14 +34,52 @@ export default class App {
 
         this.client = client;
         this.graphql = new GraphQlClient(config);
+        this.dayCron = new CronJob({
+            cronTime: '0 40 2 * * *', // FIXME: 테스트
+            onTick: this.notifyDay,
+            timeZone: 'Asia/Seoul',
+            unrefTimeout: true,
+        });
     }
 
     async run() {
+        this.dayCron.start();
         await this.client.login(this.config.token);
     }
 
+    private notifyDay = async () => {
+        const channel = await this.client.channels.get(this.config.tempChannelId);
+        if (channel == null || !['text', 'dm', 'group'].includes(channel.type)) {
+            return;
+        }
+
+        const textChannel = channel as SendableChannel;
+        await Promise.all([
+            this.checkNotifyBirthday(textChannel),
+        ]);
+    };
+
     private async processMessage(message: Discord.Message) {
         const content = message.content;
+        const mention = `<@${this.client.user.id}> `;
+        if (content.startsWith(mention)) {
+            const command = content.substring(mention.length);
+            if (command === 'notify here') {
+                if (message.guild == null) {
+                    await message.channel.send(':x: 서버에서만 가능');
+                    return;
+                }
+                if (message.author.id !== message.guild.ownerID) {
+                    await message.channel.send(':x: 서버 소유자만 가능');
+                    return;
+                }
+            } else if (command === 'notify clear') {
+            } else {
+                await message.channel.send(':x: 알 수 없는 명령');
+            }
+            return;
+        }
+
         if (content.startsWith('프리코네 캐릭터 ')) {
             const name = content.substring(9).trim();
             if (name !== '') {
@@ -180,5 +220,17 @@ export default class App {
             embed.addField(label, String(Math.floor((result as any)[key])), true);
         }
         await channel.send(embed);
+    }
+
+    async checkNotifyBirthday(channel: SendableChannel) {
+        const birthday = await this.graphql.getTodayBirthday();
+        if (birthday == null) {
+            return;
+        }
+        let emoji = ':cake:';
+        if (birthday.id === 100701) {
+            emoji = ':custard:';
+        }
+        await channel.send(`${emoji} 오늘은 **${birthday.name}**의 생일입니다!`);
     }
 }
