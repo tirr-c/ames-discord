@@ -38,6 +38,9 @@ export default class GraphQlClient {
 
     async getTodayBirthday() {
         const today = new Date();
+        const tzAdjust = today.getTimezoneOffset() + 540;
+        today.setMinutes(today.getMinutes() + tzAdjust);
+
         const month = today.getMonth() + 1;
         const day = today.getDate();
         const nearest = await this.getNearestBirthdayFrom(month, day);
