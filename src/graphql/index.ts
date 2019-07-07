@@ -52,4 +52,17 @@ export default class GraphQlClient {
         }
         return null;
     }
+
+    async getNextBirthday() {
+        const today = new Date();
+        const tzAdjust = today.getTimezoneOffset() + 540;
+        today.setMinutes(today.getMinutes() + tzAdjust);
+        today.setHours(today.getHours() - 5);
+        today.setDate(today.getDate() + 1);
+
+        const month = today.getMonth() + 1;
+        const day = today.getDate();
+        const nearest = await this.getNearestBirthdayFrom(month, day);
+        return nearest.data.result;
+    }
 }

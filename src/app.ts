@@ -88,6 +88,11 @@ export default class App {
             }
         }
 
+        if (content === '프리코네 생일') {
+            await this.checkNextBirthday(message.channel);
+            return;
+        }
+
         {
             const result = /^프리코네 (.*) 스탯$/.exec(content);
             if (result != null) {
@@ -232,5 +237,10 @@ export default class App {
             emoji = ':custard:';
         }
         await channel.send(`${emoji} 오늘은 **${birthday.name}**의 생일입니다!`);
+    }
+
+    async checkNextBirthday(channel: SendableChannel) {
+        const birthday = await this.graphql.getNextBirthday();
+        await channel.send(`다음 생일은 **${birthday.birthMonth}월 ${birthday.birthDay}일 ${birthday.name}**`);
     }
 }
