@@ -233,14 +233,17 @@ export default class App {
             return;
         }
         let emoji = ':cake:';
-        if (birthday.id === 100701) {
+        if (birthday.find(({ id }) => id === 100701) != null) {
             emoji = ':custard:';
         }
-        await channel.send(`${emoji} 오늘은 **${birthday.name}**의 생일입니다!`);
+        const names = birthday.map(unit => unit.name).join(', ');
+        await channel.send(`${emoji} 오늘은 **${names}**의 생일입니다!`);
     }
 
     async checkNextBirthday(channel: SendableChannel) {
         const birthday = await this.graphql.getNextBirthday();
-        await channel.send(`다음 생일은 **${birthday.birthMonth}월 ${birthday.birthDay}일 ${birthday.name}**`);
+        const { birthMonth, birthDay } = birthday[0];
+        const names = birthday.map(unit => unit.name).join(', ');
+        await channel.send(`다음 생일은 **${birthMonth}월 ${birthDay}일 ${names}**`);
     }
 }

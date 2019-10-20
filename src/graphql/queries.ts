@@ -126,7 +126,7 @@ export interface NearestBirthdayFromResponse {
         name: string;
         birthMonth: number;
         birthDay: number;
-    };
+    }[];
 }
 
 export const NearestBirthdayFrom: Query<NearestBirthdayFromResponse, { month: number, day: number }> = {

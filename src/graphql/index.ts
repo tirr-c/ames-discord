@@ -44,11 +44,11 @@ export default class GraphQlClient {
         const month = today.getMonth() + 1;
         const day = today.getDate();
         const nearest = await this.getNearestBirthdayFrom(month, day);
-        if (nearest.data.result.birthMonth === month && nearest.data.result.birthDay === day) {
-            return {
-                id: nearest.data.result.id,
-                name: nearest.data.result.name,
-            };
+        if (nearest.data.result[0].birthMonth === month && nearest.data.result[0].birthDay === day) {
+            return nearest.data.result.map(unit => ({
+                id: unit.id,
+                name: unit.name,
+            }));
         }
         return null;
     }
