@@ -10,9 +10,12 @@ export interface Config {
     tempChannelId: string;
 }
 
-export async function loadFromFile(envPath: string): Promise<Config> {
-    const rawEnv = await fs.promises.readFile(envPath);
-    const env = dotenv.parse(rawEnv);
+export async function loadFromFile(envPath?: string): Promise<Config> {
+    let env: { [key: string]: string } = {};
+    if (envPath != null) {
+        const rawEnv = await fs.promises.readFile(envPath);
+        env = dotenv.parse(rawEnv);
+    }
     return {
         token: env.AMES_DISCORD_TOKEN || process.env.AMES_DISCORD_TOKEN || '',
         graphqlEndpoint: env.AMES_ENDPOINT || process.env.AMES_ENDPOINT || '',

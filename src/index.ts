@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/node';
 import App from './app';
 import * as config from './config';
 
-const envPath = process.argv[2] || '.env';
-config.loadFromFile(path.resolve(envPath))
+const envPath = process.argv[2];
+config.loadFromFile(envPath ? path.resolve(envPath) : undefined)
     .then(config => {
         if (config.sentryDsn != null) {
             Sentry.init({
