@@ -12,7 +12,7 @@ jobs:
     - name: Login to Github Package Registry
       env:
         GITHUB_AUTH_USER: ${{ secrets.GITHUB_AUTH_USER }}
-        GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
+        GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: docker login docker.pkg.github.com -u $GITHUB_AUTH_USER -p $GITHUB_AUTH_TOKEN
     - uses: actions/checkout@v1
     - name: Build the Docker image
