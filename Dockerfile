@@ -12,7 +12,8 @@ FROM node:10
 WORKDIR /app
 ENV TINI_VERSION v0.18.0
 RUN ARCH="$(dpkg --print-architecture)" \
- && wget -qO- "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH}" > /tini
+ && wget -qO /tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${ARCH}" \
+ && chmod +x /tini
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 RUN yarn --prod --frozen-lockfile && yarn cache clean
