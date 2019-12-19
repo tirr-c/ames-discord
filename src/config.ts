@@ -14,10 +14,10 @@ export async function loadFromFile(envPath: string): Promise<Config> {
     const rawEnv = await fs.promises.readFile(envPath);
     const env = dotenv.parse(rawEnv);
     return {
-        token: env.AMES_DISCORD_TOKEN,
-        graphqlEndpoint: env.AMES_ENDPOINT,
-        staticAssetsUrl: env.AMES_STATIC,
-        sentryDsn: env.SENTRY_DSN || undefined,
-        tempChannelId: env.TEMP_CHANNEL_ID,
+        token: env.AMES_DISCORD_TOKEN || process.env.AMES_DISCORD_TOKEN || '',
+        graphqlEndpoint: env.AMES_ENDPOINT || process.env.AMES_ENDPOINT || '',
+        staticAssetsUrl: env.AMES_STATIC || process.env.AMES_STATIC || '',
+        sentryDsn: env.SENTRY_DSN || process.env.SENTRY_DSN || undefined,
+        tempChannelId: env.TEMP_CHANNEL_ID || process.env.TEMP_CHANNEL_ID || '',
     };
 }
